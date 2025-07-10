@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heimdall Web - 页面效果预览</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: #f5f5f5;
+            line-height: 1.6;
+        }
+        
+        .preview-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .preview-header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .preview-header h1 {
+            color: #1890ff;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .preview-header p {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .page-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .page-mockup {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .page-mockup:hover {
+            transform: translateY(-5px);
+        }
+        
+        .page-header {
+            background: #1890ff;
+            color: white;
+            padding: 15px 20px;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .page-content {
+            padding: 20px;
+            min-height: 400px;
+        }
+        
+        /* 登录页面样式 */
+        .login-page {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+        }
+        
+        .login-form {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            width: 300px;
+        }
+        
+        .login-logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .login-logo h2 {
+            color: #1890ff;
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .login-btn {
+            width: 100%;
+            background: #1890ff;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        
+        /* 仪表板样式 */
+        .dashboard-layout {
+            display: flex;
+            min-height: 400px;
+        }
+        
+        .sidebar {
+            width: 240px;
+            background: white;
+            border-right: 1px solid #e8e8e8;
+            padding: 20px 0;
+        }
+        
+        .sidebar-logo {
+            padding: 0 20px 20px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #1890ff;
+            border-bottom: 1px solid #e8e8e8;
+            margin-bottom: 20px;
+        }
+        
+        .nav-menu {
+            list-style: none;
+        }
+        
+        .nav-item {
+            padding: 12px 20px;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .nav-item:hover, .nav-item.active {
+            background: #e6f7ff;
+            color: #1890ff;
+        }
+        
+        .nav-item i {
+            margin-right: 8px;
+            width: 16px;
+        }
+        
+        .main-content {
+            flex: 1;
+            background: #f0f2f5;
+        }
+        
+        .header {
+            background: white;
+            padding: 16px 24px;
+            border-bottom: 1px solid #e8e8e8;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .breadcrumb {
+            color: #999;
+            font-size: 14px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .content-area {
+            padding: 24px;
+        }
+        
+        /* 统计卡片 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #1890ff;
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        /* 文章列表样式 */
+        .posts-page {
+            background: #f0f2f5;
+            padding: 24px;
+            min-height: 400px;
+        }
+        
+        .page-title {
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .title-text h2 {
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .title-text p {
+            color: #666;
+            margin: 0;
+        }
+        
+        .page-actions button {
+            background: #1890ff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        
+        .filters-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .filters-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 12px;
+            align-items: center;
+        }
+        
+        .filter-input, .filter-select {
+            padding: 8px 12px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .data-table {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .table-header {
+            background: #fafafa;
+            padding: 16px;
+            border-bottom: 1px solid #e8e8e8;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .table-row {
+            padding: 16px;
+            border-bottom: 1px solid #f0f0f0;
+            display: grid;
+            grid-template-columns: 3fr 1fr 1fr 1fr 1fr 1fr;
+            gap: 16px;
+            align-items: center;
+        }
+        
+        .post-title {
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .post-excerpt {
+            color: #999;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+        
+        .status-tag {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-published {
+            background: #f6ffed;
+            color: #52c41a;
+            border: 1px solid #b7eb8f;
+        }
+        
+        .status-draft {
+            background: #fff7e6;
+            color: #fa8c16;
+            border: 1px solid #ffd591;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn-small {
+            padding: 4px 8px;
+            border: 1px solid #d9d9d9;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .btn-small:hover {
+            border-color: #1890ff;
+            color: #1890ff;
+        }
+        
+        /* 文章编辑器样式 */
+        .editor-page {
+            background: #f0f2f5;
+            padding: 24px;
+            min-height: 400px;
+        }
+        
+        .editor-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 16px;
+            height: 350px;
+        }
+        
+        .editor-main {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .editor-toolbar {
+            background: #fafafa;
+            padding: 12px 16px;
+            border-bottom: 1px solid #e8e8e8;
+            display: flex;
+            gap: 8px;
+        }
+        
+        .toolbar-btn {
+            padding: 6px 10px;
+            border: 1px solid #d9d9d9;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .editor-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            height: calc(100% - 60px);
+        }
+        
+        .editor-input {
+            padding: 16px;
+            border: none;
+            resize: none;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 14px;
+            border-right: 1px solid #e8e8e8;
+        }
+        
+        .editor-preview {
+            padding: 16px;
+            background: #fafafa;
+            overflow-y: auto;
+        }
+        
+        .editor-sidebar {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        .sidebar-section {
+            margin-bottom: 20px;
+        }
+        
+        .sidebar-section h4 {
+            color: #333;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+        
+        .form-field {
+            margin-bottom: 12px;
+        }
+        
+        .form-field label {
+            display: block;
+            margin-bottom: 4px;
+            color: #666;
+            font-size: 13px;
+        }
+        
+        .form-field input, .form-field select, .form-field textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #d9d9d9;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        
+        /* 标签管理样式 */
+        .tags-page {
+            background: #f0f2f5;
+            padding: 24px;
+            min-height: 400px;
+        }
+        
+        .tags-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+        
+        .tag-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #1890ff;
+        }
+        
+        .tag-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .tag-stats {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+        
+        .tag-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .page-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .dashboard-layout {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .editor-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .filters-row {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .progress-bar {
+            background: #f0f0f0;
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(90deg, #1890ff, #52c41a);
+            height: 8px;
+            width: 60%;
+            transition: width 0.3s ease;
+        }
+        
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+        
+        .feature-item {
+            background: #f9f9f9;
+            padding: 16px;
+            border-radius: 8px;
+            border-left: 4px solid #52c41a;
+        }
+        
+        .feature-item.pending {
+            border-left-color: #fa8c16;
+            background: #fff7e6;
+        }
+        
+        .feature-item.progress {
+            border-left-color: #1890ff;
+            background: #f0f9ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="preview-container">
+        <!-- 项目概览 -->
+        <div class="preview-header">
+            <h1>🏰 Heimdall Web 管理系统</h1>
+            <p>现代化博客管理后台 - 页面效果预览</p>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+            <p><strong>项目进度：60% 完成</strong> | Phase 1 & 2 核心功能已实现</p>
+            
+            <div class="feature-list">
+                <div class="feature-item">
+                    <strong>✅ 认证系统</strong><br>
+                    <small>登录/登出/权限管理</small>
+                </div>
+                <div class="feature-item">
+                    <strong>✅ 管理布局</strong><br>
+                    <small>响应式侧边栏/导航</small>
+                </div>
+                <div class="feature-item">
+                    <strong>✅ 文章管理</strong><br>
+                    <small>CRUD/筛选/批量操作</small>
+                </div>
+                <div class="feature-item progress">
+                    <strong>🔄 表单编辑器</strong><br>
+                    <small>创建/编辑文章界面</small>
+                </div>
+                <div class="feature-item pending">
+                    <strong>⏳ 标签管理</strong><br>
+                    <small>标签分类系统</small>
+                </div>
+                <div class="feature-item pending">
+                    <strong>⏳ 评论管理</strong><br>
+                    <small>评论审核界面</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- 页面预览网格 -->
+        <div class="page-grid">
+            <!-- 1. 登录页面 -->
+            <div class="page-mockup">
+                <div class="page-header">🔐 用户登录页面</div>
+                <div class="login-page">
+                    <div class="login-form">
+                        <div class="login-logo">
+                            <h2>Heimdall</h2>
+                            <p style="color: #666; font-size: 14px;">管理员登录</p>
+                        </div>
+                        <div class="form-group">
+                            <label>用户名</label>
+                            <input type="text" placeholder="请输入用户名" value="admin">
+                        </div>
+                        <div class="form-group">
+                            <label>密码</label>
+                            <input type="password" placeholder="请输入密码" value="••••••••">
+                        </div>
+                        <div class="form-group">
+                            <label style="display: flex; align-items: center; gap: 8px;">
+                                <input type="checkbox" checked> 记住登录状态
+                            </label>
+                        </div>
+                        <button class="login-btn">登录</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. 仪表板页面 -->
+            <div class="page-mockup">
+                <div class="page-header">📊 管理仪表板</div>
+                <div class="dashboard-layout">
+                    <div class="sidebar">
+                        <div class="sidebar-logo">Heimdall</div>
+                        <ul class="nav-menu">
+                            <li class="nav-item active"><i>📊</i> 仪表板</li>
+                            <li class="nav-item"><i>📝</i> 文章管理</li>
+                            <li class="nav-item"><i>🏷️</i> 标签管理</li>
+                            <li class="nav-item"><i>💬</i> 评论管理</li>
+                            <li class="nav-item"><i>👥</i> 用户管理</li>
+                        </ul>
+                    </div>
+                    <div class="main-content">
+                        <div class="header">
+                            <div class="breadcrumb">仪表板 / 概览</div>
+                            <div class="user-info">
+                                <span>👤 Admin</span>
+                                <span>🔔</span>
+                            </div>
+                        </div>
+                        <div class="content-area">
+                            <div class="stats-grid">
+                                <div class="stat-card">
+                                    <div class="stat-value">124</div>
+                                    <div class="stat-label">总文章数</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-value">98</div>
+                                    <div class="stat-label">已发布</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-value">12.4K</div>
+                                    <div class="stat-label">总浏览量</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-value">432</div>
+                                    <div class="stat-label">评论数</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. 文章列表页面 -->
+            <div class="page-mockup">
+                <div class="page-header">📝 文章管理 - 列表页面</div>
+                <div class="posts-page">
+                    <div class="page-title">
+                        <div class="title-text">
+                            <h2>文章管理</h2>
+                            <p>管理您的博客文章、草稿和已发布内容</p>
+                        </div>
+                        <div class="page-actions">
+                            <button>+ 新建文章</button>
+                        </div>
+                    </div>
+                    
+                    <div class="filters-card">
+                        <div class="filters-row">
+                            <input class="filter-input" placeholder="🔍 搜索文章...">
+                            <select class="filter-select">
+                                <option>全部状态</option>
+                                <option>已发布</option>
+                                <option>草稿</option>
+                            </select>
+                            <input class="filter-input" placeholder="日期范围">
+                            <select class="filter-select">
+                                <option>最新优先</option>
+                                <option>最旧优先</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="data-table">
+                        <div class="table-header">文章列表 (共 124 篇)</div>
+                        <div class="table-row">
+                            <div>
+                                <div class="post-title">React 18 新特性详解</div>
+                                <div class="post-excerpt">深入探讨 React 18 的并发特性和 Suspense 改进...</div>
+                            </div>
+                            <div><span class="status-tag status-published">已发布</span></div>
+                            <div>Admin</div>
+                            <div>React, 前端</div>
+                            <div>👁 1.2K 💬 24</div>
+                            <div class="action-buttons">
+                                <button class="btn-small">编辑</button>
+                                <button class="btn-small">预览</button>
+                                <button class="btn-small">⋯</button>
+                            </div>
+                        </div>
+                        <div class="table-row">
+                            <div>
+                                <div class="post-title">TypeScript 最佳实践</div>
+                                <div class="post-excerpt">分享在大型项目中使用 TypeScript 的经验和技巧...</div>
+                            </div>
+                            <div><span class="status-tag status-draft">草稿</span></div>
+                            <div>Admin</div>
+                            <div>TypeScript</div>
+                            <div>👁 0 💬 0</div>
+                            <div class="action-buttons">
+                                <button class="btn-small">编辑</button>
+                                <button class="btn-small">预览</button>
+                                <button class="btn-small">⋯</button>
+                            </div>
+                        </div>
+                        <div class="table-row">
+                            <div>
+                                <div class="post-title">Next.js 14 升级指南</div>
+                                <div class="post-excerpt">详细介绍如何将项目升级到 Next.js 14...</div>
+                            </div>
+                            <div><span class="status-tag status-published">已发布</span></div>
+                            <div>Admin</div>
+                            <div>Next.js, SSR</div>
+                            <div>👁 856 💬 12</div>
+                            <div class="action-buttons">
+                                <button class="btn-small">编辑</button>
+                                <button class="btn-small">预览</button>
+                                <button class="btn-small">⋯</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. 文章编辑器页面 -->
+            <div class="page-mockup">
+                <div class="page-header">✏️ 文章编辑器 - 创建/编辑</div>
+                <div class="editor-page">
+                    <div class="page-title">
+                        <div class="title-text">
+                            <h2>创建新文章</h2>
+                            <p>使用 Markdown 编辑器创作您的内容</p>
+                        </div>
+                        <div class="page-actions">
+                            <button style="background: #52c41a;">发布文章</button>
+                            <button style="background: #fa8c16; margin-left: 8px;">保存草稿</button>
+                        </div>
+                    </div>
+                    
+                    <div class="editor-container">
+                        <div class="editor-main">
+                            <div class="editor-toolbar">
+                                <button class="toolbar-btn"><strong>B</strong></button>
+                                <button class="toolbar-btn"><em>I</em></button>
+                                <button class="toolbar-btn">H1</button>
+                                <button class="toolbar-btn">🔗</button>
+                                <button class="toolbar-btn">📷</button>
+                                <button class="toolbar-btn">```</button>
+                                <button class="toolbar-btn">📋</button>
+                                <button class="toolbar-btn">🔄</button>
+                                <button class="toolbar-btn">👁</button>
+                            </div>
+                            <div class="editor-content">
+                                <textarea class="editor-input" placeholder="开始编写您的文章内容..."># React 18 新特性详解
+
+React 18 带来了许多令人兴奋的新特性，包括：
+
+## 并发特性
+- **Suspense** 改进
+- **useDeferredValue** Hook
+- **useTransition** Hook
+
+## 性能优化
+- 自动批处理
+- 新的 SSR 架构
+
+```jsx
+function App() {
+  const [isPending, startTransition] = useTransition();
+  // ...
+}
+```
+
+这些特性将大大提升应用的用户体验。</textarea>
+                                <div class="editor-preview">
+                                    <h1>React 18 新特性详解</h1>
+                                    <p>React 18 带来了许多令人兴奋的新特性，包括：</p>
+                                    <h2>并发特性</h2>
+                                    <ul>
+                                        <li><strong>Suspense</strong> 改进</li>
+                                        <li><strong>useDeferredValue</strong> Hook</li>
+                                        <li><strong>useTransition</strong> Hook</li>
+                                    </ul>
+                                    <h2>性能优化</h2>
+                                    <ul>
+                                        <li>自动批处理</li>
+                                        <li>新的 SSR 架构</li>
+                                    </ul>
+                                    <pre style="background: #f6f8fa; padding: 16px; border-radius: 6px;"><code>function App() {
+  const [isPending, startTransition] = useTransition();
+  // ...
+}</code></pre>
+                                    <p>这些特性将大大提升应用的用户体验。</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="editor-sidebar">
+                            <div class="sidebar-section">
+                                <h4>📄 基础信息</h4>
+                                <div class="form-field">
+                                    <label>标题</label>
+                                    <input type="text" value="React 18 新特性详解">
+                                </div>
+                                <div class="form-field">
+                                    <label>URL 别名</label>
+                                    <input type="text" value="react-18-new-features">
+                                </div>
+                                <div class="form-field">
+                                    <label>摘要</label>
+                                    <textarea rows="3" placeholder="简短描述文章内容...">深入探讨 React 18 的并发特性和 Suspense 改进</textarea>
+                                </div>
+                            </div>
+                            
+                            <div class="sidebar-section">
+                                <h4>🏷️ 分类标签</h4>
+                                <div class="form-field">
+                                    <select multiple style="height: 80px;">
+                                        <option selected>React</option>
+                                        <option selected>前端开发</option>
+                                        <option>JavaScript</option>
+                                        <option>性能优化</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="sidebar-section">
+                                <h4>⚙️ 发布设置</h4>
+                                <div class="form-field">
+                                    <label>状态</label>
+                                    <select>
+                                        <option>草稿</option>
+                                        <option selected>发布</option>
+                                        <option>归档</option>
+                                    </select>
+                                </div>
+                                <div class="form-field">
+                                    <label>可见性</label>
+                                    <select>
+                                        <option selected>公开</option>
+                                        <option>私密</option>
+                                        <option>密码保护</option>
+                                    </select>
+                                </div>
+                                <div class="form-field">
+                                    <label>发布时间</label>
+                                    <input type="datetime-local" value="2025-07-10T10:00">
+                                </div>
+                            </div>
+                            
+                            <div class="sidebar-section">
+                                <h4>🔍 SEO 设置</h4>
+                                <div class="form-field">
+                                    <label>Meta 标题</label>
+                                    <input type="text" placeholder="SEO 优化标题">
+                                </div>
+                                <div class="form-field">
+                                    <label>Meta 描述</label>
+                                    <textarea rows="2" placeholder="搜索引擎描述"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. 标签管理页面 -->
+            <div class="page-mockup">
+                <div class="page-header">🏷️ 标签管理页面</div>
+                <div class="tags-page">
+                    <div class="page-title">
+                        <div class="title-text">
+                            <h2>标签管理</h2>
+                            <p>管理文章分类标签，组织您的内容</p>
+                        </div>
+                        <div class="page-actions">
+                            <button>+ 新建标签</button>
+                        </div>
+                    </div>
+                    
+                    <div class="filters-card">
+                        <div class="filters-row">
+                            <input class="filter-input" placeholder="🔍 搜索标签...">
+                            <select class="filter-select">
+                                <option>全部标签</option>
+                                <option>使用频繁</option>
+                                <option>较少使用</option>
+                            </select>
+                            <select class="filter-select">
+                                <option>按名称排序</option>
+                                <option>按使用次数</option>
+                            </select>
+                            <div></div>
+                        </div>
+                    </div>
+                    
+                    <div class="tags-grid">
+                        <div class="tag-card" style="border-left-color: #1890ff;">
+                            <div class="tag-name">React</div>
+                            <div class="tag-stats">32 篇文章 · 创建于 2024-01-15</div>
+                            <div class="tag-actions">
+                                <button class="btn-small">编辑</button>
+                                <button class="btn-small">删除</button>
+                            </div>
+                        </div>
+                        <div class="tag-card" style="border-left-color: #52c41a;">
+                            <div class="tag-name">前端开发</div>
+                            <div class="tag-stats">28 篇文章 · 创建于 2024-01-10</div>
+                            <div class="tag-actions">
+                                <button class="btn-small">编辑</button>
+                                <button class="btn-small">删除</button>
+                            </div>
+                        </div>
+                        <div class="tag-card" style="border-left-color: #fa8c16;">
+                            <div class="tag-name">TypeScript</div>
+                            <div class="tag-stats">15 篇文章 · 创建于 2024-02-01</div>
+                            <div class="tag-actions">
+                                <button class="btn-small">编辑</button>
+                                <button class="btn-small">删除</button>
+                            </div>
+                        </div>
+                        <div class="tag-card" style="border-left-color: #722ed1;">
+                            <div class="tag-name">Next.js</div>
+                            <div class="tag-stats">12 篇文章 · 创建于 2024-02-15</div>
+                            <div class="tag-actions">
+                                <button class="btn-small">编辑</button>
+                                <button class="btn-small">删除</button>
+                            </div>
+                        </div>
+                        <div class="tag-card" style="border-left-color: #eb2f96;">
+                            <div class="tag-name">性能优化</div>
+                            <div class="tag-stats">8 篇文章 · 创建于 2024-03-01</div>
+                            <div class="tag-actions">
+                                <button class="btn-small">编辑</button>
+                                <button class="btn-small">删除</button>
+                            </div>
+                        </div>
+                        <div class="tag-card" style="border-left-color: #13c2c2;">
+                            <div class="tag-name">JavaScript</div>
+                            <div class="tag-stats">25 篇文章 · 创建于 2024-01-05</div>
+                            <div class="tag-actions">
+                                <button class="btn-small">编辑</button>
+                                <button class="btn-small">删除</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. 评论管理页面 -->
+            <div class="page-mockup">
+                <div class="page-header">💬 评论管理页面</div>
+                <div class="page-content">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <div>
+                            <h3 style="margin-bottom: 8px;">评论审核</h3>
+                            <p style="color: #666; margin: 0;">审核和管理用户评论</p>
+                        </div>
+                        <div style="background: #fff2e8; color: #fa8c16; padding: 8px 16px; border-radius: 4px; font-size: 14px;">
+                            待审核: 5 条
+                        </div>
+                    </div>
+                    
+                    <div style="background: #f9f9f9; padding: 16px; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid #fa8c16;">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
+                            <div>
+                                <strong>张三</strong> <span style="color: #999; font-size: 12px;">· 2小时前</span>
+                                <span style="background: #fff2e8; color: #fa8c16; padding: 2px 6px; border-radius: 4px; font-size: 10px; margin-left: 8px;">待审核</span>
+                            </div>
+                            <div style="display: flex; gap: 8px;">
+                                <button style="background: #52c41a; color: white; border: none; padding: 4px 12px; border-radius: 4px; cursor: pointer; font-size: 12px;">通过</button>
+                                <button style="background: #ff4d4f; color: white; border: none; padding: 4px 12px; border-radius: 4px; cursor: pointer; font-size: 12px;">拒绝</button>
+                            </div>
+                        </div>
+                        <div style="color: #666; font-size: 14px; margin-bottom: 8px;">
+                            评论文章: React 18 新特性详解
+                        </div>
+                        <div style="background: white; padding: 12px; border-radius: 4px;">
+                            这篇文章写得很详细，对我学习 React 18 很有帮助。特别是关于并发特性的部分，解释得很清楚。期待更多类似的技术文章！
+                        </div>
+                    </div>
+                    
+                    <div style="background: #f6ffed; padding: 16px; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid #52c41a;">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
+                            <div>
+                                <strong>李四</strong> <span style="color: #999; font-size: 12px;">· 1天前</span>
+                                <span style="background: #f6ffed; color: #52c41a; padding: 2px 6px; border-radius: 4px; font-size: 10px; margin-left: 8px;">已通过</span>
+                            </div>
+                            <div style="display: flex; gap: 8px;">
+                                <button style="background: #d9d9d9; color: #666; border: none; padding: 4px 12px; border-radius: 4px; cursor: pointer; font-size: 12px;">编辑</button>
+                                <button style="background: #ff4d4f; color: white; border: none; padding: 4px 12px; border-radius: 4px; cursor: pointer; font-size: 12px;">删除</button>
+                            </div>
+                        </div>
+                        <div style="color: #666; font-size: 14px; margin-bottom: 8px;">
+                            评论文章: TypeScript 最佳实践
+                        </div>
+                        <div style="background: white; padding: 12px; border-radius: 4px;">
+                            在大型项目中确实需要这样的规范，我们团队也在逐步采用这些最佳实践。
+                        </div>
+                    </div>
+                    
+                    <div style="background: #fff1f0; padding: 16px; border-radius: 8px; border-left: 4px solid #ff4d4f;">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
+                            <div>
+                                <strong>匿名用户</strong> <span style="color: #999; font-size: 12px;">· 3天前</span>
+                                <span style="background: #fff1f0; color: #ff4d4f; padding: 2px 6px; border-radius: 4px; font-size: 10px; margin-left: 8px;">已拒绝</span>
+                            </div>
+                            <div style="display: flex; gap: 8px;">
+                                <button style="background: #d9d9d9; color: #666; border: none; padding: 4px 12px; border-radius: 4px; cursor: pointer; font-size: 12px;">恢复</button>
+                                <button style="background: #ff4d4f; color: white; border: none; padding: 4px 12px; border-radius: 4px; cursor: pointer; font-size: 12px;">删除</button>
+                            </div>
+                        </div>
+                        <div style="color: #666; font-size: 14px; margin-bottom: 8px;">
+                            评论文章: Next.js 14 升级指南
+                        </div>
+                        <div style="background: white; padding: 12px; border-radius: 4px; color: #999;">
+                            [该评论包含不当内容已被拒绝]
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 技术特性说明 -->
+        <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-top: 40px;">
+            <h2 style="color: #1890ff; margin-bottom: 20px;">🛠️ 技术实现特性</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                <div>
+                    <h4 style="color: #333; margin-bottom: 10px;">🎨 用户界面</h4>
+                    <ul style="color: #666; line-height: 1.8;">
+                        <li>Ant Design 组件库</li>
+                        <li>响应式布局设计</li>
+                        <li>现代化视觉风格</li>
+                        <li>流畅的交互动画</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="color: #333; margin-bottom: 10px;">⚡ 性能优化</h4>
+                    <ul style="color: #666; line-height: 1.8;">
+                        <li>React Query 数据缓存</li>
+                        <li>代码分割和懒加载</li>
+                        <li>乐观更新机制</li>
+                        <li>虚拟滚动优化</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="color: #333; margin-bottom: 10px;">🔒 安全可靠</h4>
+                    <ul style="color: #666; line-height: 1.8;">
+                        <li>JWT 身份验证</li>
+                        <li>路由权限控制</li>
+                        <li>表单数据验证</li>
+                        <li>XSS 攻击防护</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="color: #333; margin-bottom: 10px;">🔧 开发体验</h4>
+                    <ul style="color: #666; line-height: 1.8;">
+                        <li>TypeScript 类型安全</li>
+                        <li>ESLint 代码规范</li>
+                        <li>Hot Reload 热更新</li>
+                        <li>模块化架构设计</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 项目状态总结 -->
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 12px; margin-top: 30px; text-align: center;">
+            <h2 style="margin-bottom: 16px;">🎯 项目开发状态</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 20px 0;">
+                <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 8px;">
+                    <div style="font-size: 24px; font-weight: bold; margin-bottom: 8px;">60%</div>
+                    <div>总体完成度</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 8px;">
+                    <div style="font-size: 24px; font-weight: bold; margin-bottom: 8px;">6</div>
+                    <div>已完成模块</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 8px;">
+                    <div style="font-size: 24px; font-weight: bold; margin-bottom: 8px;">2</div>
+                    <div>开发中模块</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 8px;">
+                    <div style="font-size: 24px; font-weight: bold; margin-bottom: 8px;">4</div>
+                    <div>待开发模块</div>
+                </div>
+            </div>
+            <p style="margin-top: 20px; opacity: 0.9;">
+                基础架构完善，核心功能就绪，正在向生产环境迈进 🚀
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // 简单的交互效果
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // 表格行点击效果
+        document.querySelectorAll('.table-row').forEach(row => {
+            row.addEventListener('click', function() {
+                this.style.backgroundColor = '#f0f9ff';
+                setTimeout(() => {
+                    this.style.backgroundColor = '';
+                }, 1000);
+            });
+        });
+
+        // 按钮点击效果
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const originalText = this.textContent;
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+            });
+        });
+    </script>
+</body>
+</html>
