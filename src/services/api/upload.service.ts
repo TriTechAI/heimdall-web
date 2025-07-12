@@ -1,9 +1,13 @@
 import { message } from 'antd';
+import apiClient from './client';
 
 export interface UploadResponse {
   url: string;
   filename: string;
   size: number;
+  mimeType?: string;
+  width?: number;
+  height?: number;
 }
 
 class ImageUploadService {
@@ -26,21 +30,16 @@ class ImageUploadService {
       // 创建FormData
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('type', 'post-image');
 
-      // 这里应该调用实际的上传API
-      // const response = await fetch('/api/upload', {
-      //   method: 'POST',
-      //   body: formData,
-      // });
+      // 使用 axios 客户端上传
+      const response = await apiClient.post<UploadResponse>('/upload/image', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
 
-      // 模拟上传过程
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      // 模拟返回的图片URL
-      const mockUrl = URL.createObjectURL(file);
-      
-      return mockUrl;
+      // 返回上传后的图片URL
+      return (response as any).url;
     } catch (error: any) {
       console.error('Image upload failed:', error);
       throw new Error(error.message || '图片上传失败');
@@ -53,6 +52,35 @@ class ImageUploadService {
   async uploadImages(files: File[]): Promise<string[]> {
     const uploadPromises = files.map(file => this.uploadImage(file));
     return Promise.all(uploadPromises);
+  }
+
+  /**
+   * 上传文件
+   */
+  async uploadFile(file: File): Promise<UploadResponse> {
+    try {
+      // 验证文件大小 (10MB)
+      const maxSize = 10 * 1024 * 1024;
+      if (file.size > maxSize) {
+        throw new Error('文件大小不能超过 10MB');
+      }
+
+      // 创建FormData
+      const formData = new FormData();
+      formData.append('file', file);
+
+      // 使用 axios 客户端上传
+      const response = await apiClient.post<UploadResponse>('/upload/file', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      return response as any;
+    } catch (error: any) {
+      console.error('File upload failed:', error);
+      throw new Error(error.message || '文件上传失败');
+    }
   }
 
   /**

@@ -3,10 +3,16 @@ import { message } from 'antd';
 
 // API Response types
 export interface ApiResponse<T = any> {
-  success: boolean;
+  code: number;
+  message: string;
   data: T;
-  message?: string;
-  code?: number;
+  timestamp: string;
+}
+
+export interface ApiErrorResponse {
+  code: string;  // Note: error code is string type
+  msg: string;   // Note: field name is 'msg' not 'message'
+  details?: any;
 }
 
 export interface PaginationResponse<T> {
@@ -49,13 +55,31 @@ apiClient.interceptors.request.use(
 // Response interceptor
 apiClient.interceptors.response.use(
   <T>(response: AxiosResponse<ApiResponse<T>>): T => {
-    // Return data directly from successful responses
-    return (response.data.data || response.data) as T;
+    // Handle successful responses
+    // Check if response has the expected structure
+    if (response.data && typeof response.data === 'object' && 'data' in response.data) {
+      return response.data.data as T;
+    }
+    // Fallback for non-standard responses
+    return response.data as T;
   },
-  (error: AxiosError<ApiResponse>) => {
+  (error: AxiosError<ApiErrorResponse | ApiResponse>) => {
     // Handle common error scenarios
     if (error.response) {
       const { status, data } = error.response;
+      
+      // Extract error message from different response formats
+      let errorMessage = 'Request failed';
+      if (data) {
+        // Handle error response format (code as string, msg field)
+        if ('msg' in data && typeof data.msg === 'string') {
+          errorMessage = data.msg;
+        }
+        // Handle standard response format (code as number, message field)
+        else if ('message' in data && typeof data.message === 'string') {
+          errorMessage = data.message;
+        }
+      }
       
       switch (status) {
         case 401:
@@ -63,24 +87,25 @@ apiClient.interceptors.response.use(
           if (typeof window !== 'undefined') {
             localStorage.removeItem('token');
             localStorage.removeItem('refreshToken');
+            localStorage.removeItem('user');
             window.location.href = '/login';
           }
           break;
         case 403:
-          message.error('Access denied');
+          message.error(errorMessage || 'Access denied');
           break;
         case 404:
-          message.error('Resource not found');
+          message.error(errorMessage || 'Resource not found');
           break;
         case 422:
           // Validation errors
-          message.error(data?.message || 'Validation failed');
+          message.error(errorMessage || 'Validation failed');
           break;
         case 500:
-          message.error('Server error, please try again later');
+          message.error(errorMessage || 'Server error, please try again later');
           break;
         default:
-          message.error(data?.message || 'Request failed');
+          message.error(errorMessage);
       }
     } else if (error.request) {
       // Network error
@@ -100,8 +125,16 @@ export default apiClient;
 export const handleApiError = (error: any) => {
   console.error('API Error:', error);
   
-  if (error?.response?.data?.message) {
-    message.error(error.response.data.message);
+  if (error?.response?.data) {
+    const data = error.response.data;
+    // Handle error response format
+    if (data.msg) {
+      message.error(data.msg);
+    } else if (data.message) {
+      message.error(data.message);
+    } else {
+      message.error('An unexpected error occurred');
+    }
   } else if (error?.message) {
     message.error(error.message);
   } else {

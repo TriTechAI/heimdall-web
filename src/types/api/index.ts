@@ -1,16 +1,23 @@
 // API 通用类型定义
 export interface ApiResponse<T = any> {
-  success: boolean;
+  code: number;
+  message: string;
   data: T;
-  message?: string;
-  code?: number;
+  timestamp: string;
+}
+
+export interface ApiErrorResponse {
+  code: string;  // Note: error code is string type
+  msg: string;   // Note: field name is 'msg' not 'message'
+  details?: any;
 }
 
 export interface PaginationMeta {
-  current: number;
-  pageSize: number;
+  page: number;      // Changed from 'current' to 'page'
+  limit: number;     // Changed from 'pageSize' to 'limit'
   total: number;
-  totalPages: number;
+  hasNext: boolean;  // Added for backend compatibility
+  hasPrev: boolean;  // Added for backend compatibility
 }
 
 export interface PaginatedResponse<T> {
@@ -20,6 +27,6 @@ export interface PaginatedResponse<T> {
 
 export interface ApiError {
   message: string;
-  code?: number;
+  code?: number | string;
   details?: any;
 }

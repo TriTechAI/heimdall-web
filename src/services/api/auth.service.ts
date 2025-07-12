@@ -1,36 +1,11 @@
 import apiClient, { handleApiError } from './client';
-
-// Auth related types
-export interface LoginRequest {
-  username: string;
-  password: string;
-  rememberMe?: boolean;
-}
-
-export interface LoginResponse {
-  token: string;
-  refreshToken: string;
-  user: User;
-}
-
-export interface User {
-  id: string;
-  username: string;
-  email: string;
-  role: string;
-  avatar?: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface RefreshTokenRequest {
-  refreshToken: string;
-}
-
-export interface ChangePasswordRequest {
-  currentPassword: string;
-  newPassword: string;
-}
+import type { 
+  User, 
+  LoginRequest, 
+  LoginResponse, 
+  RefreshTokenRequest,
+  ChangePasswordRequest 
+} from '@/types/models/user';
 
 // Auth service class
 class AuthService {

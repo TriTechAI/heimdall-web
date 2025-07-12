@@ -1,50 +1,16 @@
 import apiClient, { handleApiError } from './client';
+import type { 
+  Tag, 
+  CreateTagInput, 
+  UpdateTagInput, 
+  TagQueryParams,
+  TagListResponse 
+} from '@/types/models/tag';
 
-// 标签相关类型
-export interface Tag {
-  id: string;
-  name: string;
-  slug: string;
-  color?: string;
-  description?: string;
-  postCount: number;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface CreateTagInput {
-  name: string;
-  slug?: string;
-  color?: string;
-  description?: string;
-}
-
-export interface UpdateTagInput extends Partial<CreateTagInput> {
-  id: string;
-}
-
-export interface TagQueryParams {
-  page?: number;
-  limit?: number;
-  keyword?: string;
-  sortBy?: 'name' | 'postCount' | 'createdAt';
-  sortOrder?: 'asc' | 'desc';
-}
-
-export interface TagListResponse {
-  list: Tag[];
-  pagination: {
-    current: number;
-    pageSize: number;
-    total: number;
-    totalPages: number;
-  };
-}
-
-// 标签服务类
+// Tag service class
 class TagService {
   /**
-   * 获取标签列表
+   * Get list of tags with pagination and filtering
    */
   async getList(params: TagQueryParams = {}): Promise<TagListResponse> {
     try {
@@ -52,7 +18,9 @@ class TagService {
       
       if (params.page) queryParams.append('page', params.page.toString());
       if (params.limit) queryParams.append('limit', params.limit.toString());
+      // Add filter params
       if (params.keyword) queryParams.append('keyword', params.keyword);
+      if (params.visibility) queryParams.append('visibility', params.visibility);
       if (params.sortBy) queryParams.append('sortBy', params.sortBy);
       if (params.sortOrder) queryParams.append('sortOrder', params.sortOrder);
 
@@ -68,7 +36,7 @@ class TagService {
   }
 
   /**
-   * 获取所有标签（不分页）
+   * Get all tags without pagination
    */
   async getAll(): Promise<Tag[]> {
     try {
@@ -80,7 +48,7 @@ class TagService {
   }
 
   /**
-   * 根据ID获取标签
+   * Get single tag by ID
    */
   async getById(id: string): Promise<Tag> {
     try {
@@ -92,7 +60,7 @@ class TagService {
   }
 
   /**
-   * 创建新标签
+   * Create new tag
    */
   async create(data: CreateTagInput): Promise<Tag> {
     try {
@@ -104,7 +72,7 @@ class TagService {
   }
 
   /**
-   * 更新标签
+   * Update existing tag
    */
   async update(id: string, data: UpdateTagInput): Promise<Tag> {
     try {
@@ -116,7 +84,7 @@ class TagService {
   }
 
   /**
-   * 删除标签
+   * Delete tag
    */
   async delete(id: string): Promise<void> {
     try {
@@ -128,7 +96,7 @@ class TagService {
   }
 
   /**
-   * 批量删除标签
+   * Batch delete tags
    */
   async batchDelete(ids: string[]): Promise<void> {
     try {
@@ -140,12 +108,11 @@ class TagService {
   }
 
   /**
-   * 搜索标签
+   * Search tags
    */
   async search(keyword: string): Promise<Tag[]> {
     try {
-      const response = await apiClient.get<Tag[]>(`/tags/search?q=${encodeURIComponent(keyword)}`);
-      return response as unknown as Tag[];
+      return await apiClient.get<Tag[]>(`/tags/search?keyword=${encodeURIComponent(keyword)}`) as unknown as Tag[];
     } catch (error) {
       handleApiError(error);
       throw error;
@@ -153,5 +120,5 @@ class TagService {
   }
 }
 
-// 导出单例实例
+// Export singleton instance
 export const tagService = new TagService();

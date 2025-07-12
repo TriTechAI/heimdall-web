@@ -23,6 +23,7 @@ class PostService {
       // Add filter params
       if (params.status) queryParams.append('status', params.status);
       if (params.visibility) queryParams.append('visibility', params.visibility);
+      if (params.type) queryParams.append('type', params.type);
       if (params.tagId) queryParams.append('tagId', params.tagId);
       if (params.authorId) queryParams.append('authorId', params.authorId);
       if (params.keyword) queryParams.append('keyword', params.keyword);

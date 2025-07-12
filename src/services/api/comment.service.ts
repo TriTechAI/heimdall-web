@@ -1,88 +1,36 @@
 import apiClient, { handleApiError } from './client';
+import type { 
+  Comment, 
+  CreateCommentInput, 
+  UpdateCommentInput, 
+  CommentQueryParams,
+  CommentListResponse,
+  CommentModerationRequest,
+  CommentStats
+} from '@/types/models/comment';
 
-// 评论状态枚举
-export type CommentStatus = 'pending' | 'approved' | 'rejected' | 'spam';
-
-// 评论接口
-export interface Comment {
-  id: string;
-  content: string;
-  author: {
-    name: string;
-    email: string;
-    website?: string;
-    avatar?: string;
-    ip?: string;
-  };
-  post: {
-    id: string;
-    title: string;
-    slug: string;
-  };
-  parent?: {
-    id: string;
-    author: string;
-    content: string;
-  };
-  status: CommentStatus;
-  createdAt: string;
-  updatedAt: string;
-  replies?: Comment[];
-  replyCount: number;
-}
-
-// 评论查询参数
-export interface CommentQueryParams {
-  page?: number;
-  limit?: number;
-  status?: CommentStatus;
-  postId?: string;
-  keyword?: string;
-  startDate?: string;
-  endDate?: string;
-  sortBy?: 'createdAt' | 'updatedAt';
-  sortOrder?: 'asc' | 'desc';
-}
-
-// 评论列表响应
-export interface CommentListResponse {
-  list: Comment[];
-  pagination: {
-    current: number;
-    pageSize: number;
-    total: number;
-    totalPages: number;
-  };
-  stats: {
-    pending: number;
-    approved: number;
-    rejected: number;
-    spam: number;
-  };
-}
-
-// 批量操作输入
-export interface BatchUpdateCommentsInput {
-  ids: string[];
-  status: CommentStatus;
-}
-
-// 评论服务类
+// Comment service class
 class CommentService {
   /**
-   * 获取评论列表
+   * Get list of comments with pagination and filtering
    */
   async getList(params: CommentQueryParams = {}): Promise<CommentListResponse> {
     try {
       const queryParams = new URLSearchParams();
       
+      // Add pagination params
       if (params.page) queryParams.append('page', params.page.toString());
       if (params.limit) queryParams.append('limit', params.limit.toString());
-      if (params.status) queryParams.append('status', params.status);
+      
+      // Add filter params
       if (params.postId) queryParams.append('postId', params.postId);
+      if (params.status) queryParams.append('status', params.status);
+      if (params.visibility) queryParams.append('visibility', params.visibility);
       if (params.keyword) queryParams.append('keyword', params.keyword);
       if (params.startDate) queryParams.append('startDate', params.startDate);
       if (params.endDate) queryParams.append('endDate', params.endDate);
+      
+      // Add sort params
       if (params.sortBy) queryParams.append('sortBy', params.sortBy);
       if (params.sortOrder) queryParams.append('sortOrder', params.sortOrder);
 
@@ -98,7 +46,19 @@ class CommentService {
   }
 
   /**
-   * 获取单个评论
+   * Get comment statistics
+   */
+  async getStats(): Promise<CommentStats> {
+    try {
+      return await apiClient.get<CommentStats>('/comments/stats') as unknown as CommentStats;
+    } catch (error) {
+      handleApiError(error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get single comment by ID
    */
   async getById(id: string): Promise<Comment> {
     try {
@@ -110,13 +70,11 @@ class CommentService {
   }
 
   /**
-   * 更新评论状态
+   * Create new comment
    */
-  async updateStatus(id: string, status: CommentStatus): Promise<Comment> {
+  async create(data: CreateCommentInput): Promise<Comment> {
     try {
-      return await apiClient.patch<Comment>(`/comments/${id}/status`, {
-        status,
-      }) as unknown as Comment;
+      return await apiClient.post<Comment>('/comments', data) as unknown as Comment;
     } catch (error) {
       handleApiError(error);
       throw error;
@@ -124,11 +82,11 @@ class CommentService {
   }
 
   /**
-   * 批量更新评论状态
+   * Reply to a comment
    */
-  async batchUpdateStatus(data: BatchUpdateCommentsInput): Promise<void> {
+  async reply(id: string, data: CreateCommentInput): Promise<Comment> {
     try {
-      await apiClient.patch('/comments/batch/status', data);
+      return await apiClient.post<Comment>(`/comments/${id}/reply`, data) as unknown as Comment;
     } catch (error) {
       handleApiError(error);
       throw error;
@@ -136,7 +94,19 @@ class CommentService {
   }
 
   /**
-   * 删除评论
+   * Update existing comment
+   */
+  async update(id: string, data: UpdateCommentInput): Promise<Comment> {
+    try {
+      return await apiClient.put<Comment>(`/comments/${id}`, data) as unknown as Comment;
+    } catch (error) {
+      handleApiError(error);
+      throw error;
+    }
+  }
+
+  /**
+   * Delete comment
    */
   async delete(id: string): Promise<void> {
     try {
@@ -148,7 +118,7 @@ class CommentService {
   }
 
   /**
-   * 批量删除评论
+   * Batch delete comments
    */
   async batchDelete(ids: string[]): Promise<void> {
     try {
@@ -160,11 +130,11 @@ class CommentService {
   }
 
   /**
-   * 获取评论统计
+   * Approve comment
    */
-  async getStats(): Promise<CommentListResponse['stats']> {
+  async approve(id: string): Promise<Comment> {
     try {
-      return await apiClient.get('/comments/stats') as unknown as CommentListResponse['stats'];
+      return await apiClient.post<Comment>(`/comments/${id}/approve`) as unknown as Comment;
     } catch (error) {
       handleApiError(error);
       throw error;
@@ -172,13 +142,47 @@ class CommentService {
   }
 
   /**
-   * 回复评论
+   * Reject comment
    */
-  async reply(commentId: string, content: string): Promise<Comment> {
+  async reject(id: string): Promise<Comment> {
     try {
-      return await apiClient.post<Comment>(`/comments/${commentId}/reply`, {
-        content,
-      }) as unknown as Comment;
+      return await apiClient.post<Comment>(`/comments/${id}/reject`) as unknown as Comment;
+    } catch (error) {
+      handleApiError(error);
+      throw error;
+    }
+  }
+
+  /**
+   * Mark comment as spam
+   */
+  async markAsSpam(id: string): Promise<Comment> {
+    try {
+      return await apiClient.post<Comment>(`/comments/${id}/spam`) as unknown as Comment;
+    } catch (error) {
+      handleApiError(error);
+      throw error;
+    }
+  }
+
+  /**
+   * Batch moderate comments (approve/reject/spam)
+   */
+  async batchModerate(request: CommentModerationRequest): Promise<void> {
+    try {
+      await apiClient.post('/comments/batch/moderate', request);
+    } catch (error) {
+      handleApiError(error);
+      throw error;
+    }
+  }
+
+  /**
+   * Batch update comment status
+   */
+  async batchUpdateStatus(ids: string[], status: Comment['status']): Promise<void> {
+    try {
+      await apiClient.patch('/comments/batch/status', { ids, status });
     } catch (error) {
       handleApiError(error);
       throw error;
@@ -186,5 +190,5 @@ class CommentService {
   }
 }
 
-// 导出单例实例
+// Export singleton instance
 export const commentService = new CommentService();
