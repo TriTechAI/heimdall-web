@@ -14,7 +14,7 @@ const nextConfig = {
     return [
       {
         source: '/',
-        destination: '/posts',
+        destination: '/login',
         permanent: false,
       },
     ];
@@ -22,7 +22,7 @@ const nextConfig = {
   webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,
-      '@': __dirname,
+      '@': require('path').join(__dirname, 'src'),
     };
     return config;
   },
